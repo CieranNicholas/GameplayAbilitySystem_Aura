@@ -3,6 +3,7 @@
 #include "Player/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -36,6 +37,13 @@ void AAuraPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 }
 
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();
+}
+
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
 	const FVector2d InputAxisVector = InputActionValue.Get<FVector2d>();
@@ -49,5 +57,55 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	if(!CursorHit.bBlockingHit) return;
+
+	LastHoveredActor = CurrentHoveredActor;
+	CurrentHoveredActor = CursorHit.GetActor();
+
+	/**
+	 * Line trace from cursor. There are several scenarios to consider:
+	 *	A. LastHoveredActor is null && CurrentHoveredActor is null
+	 *		- Do nothing
+	 *	B. LastHoveredActor is null && CurrentHoveredActor is valid
+	 *		- Call CurrentHoveredActor->HighlightActor()
+	 *	C. LastHoveredActor is valid && CurrentHoveredActor is null
+	 *		- Call LastHoveredActor->UnhighlightActor()
+	 *	D. LastHoveredActor is valid && LastHoveredActor != CurrentHoveredActor
+	 *		- Call LastHoveredActor->UnhighlightActor() & CurrentHoveredActor->HighlightActor()
+	 *	C. LastHoveredActor is valid && LastHoveredActor == CurrentHoveredActor
+	 *		- Do nothing
+	*/
+
+	if (LastHoveredActor == nullptr)
+	{
+		if(CurrentHoveredActor != nullptr)
+		{
+			// Case B
+			CurrentHoveredActor->HighlightActor();
+		}
+	}
+	else // LastHoveredActor is valid
+	{
+		if(CurrentHoveredActor == nullptr)
+		{
+			// Case C
+			LastHoveredActor->UnHighlightActor();
+		}
+		else // both actors are valid
+		{
+			if(LastHoveredActor != CurrentHoveredActor)
+			{
+				// Case D
+				LastHoveredActor->UnHighlightActor();
+				CurrentHoveredActor->HighlightActor();
+			}
+		}
 	}
 }
