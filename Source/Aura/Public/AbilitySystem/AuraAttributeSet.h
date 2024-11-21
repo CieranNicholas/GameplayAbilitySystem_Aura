@@ -100,13 +100,20 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage)
 	UFUNCTION()
 	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;
+
+	// CriticalHitResistance
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Secondary Attributes")
+	FGameplayAttributeData CriticalHitResistance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance)
+	UFUNCTION()
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;
 	
 	// HealthRegeneration
-    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category = "Secondary Attributes")
-    FGameplayAttributeData HealthRegeneration;
-    ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration)
-    UFUNCTION()
-    void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category = "Secondary Attributes")
+	FGameplayAttributeData HealthRegeneration;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration)
+	UFUNCTION()
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
 
 	// ManaRegeneration
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category = "Secondary Attributes")
@@ -116,14 +123,14 @@ public:
 	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
 
 	// MaxHealth
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Secondary Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
 
 	// MaxMana
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Secondary Attributes")
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana)
 	UFUNCTION()
